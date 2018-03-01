@@ -1,2 +1,3 @@
 # CPSC323
-CSUF - CPSC 323 Assignments Repository
+Project Team: 		1. Abhishek Mhatre (abhishekmhatre@csu.fullerton.edu_
+					2. Aishwarya Iyer
