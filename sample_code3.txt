@@ -1,0 +1,23 @@
+integer main()
+{
+int n;
+int first = 0;
+int second = 1;
+int next;
+int c=0;
+read(n);
+write(n);
+while(c<n)
+{
+if( c <= 1 )
+next = c;
+else
+{
+next = first + second;
+first = second;
+second = next;
+}
+write(next);
+}
+return 0;
+}
