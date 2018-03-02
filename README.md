@@ -1,3 +1,3 @@
 # CPSC323
-Project Team: 		1. Abhishek Mhatre (abhishekmhatre@csu.fullerton.edu_
-					2. Aishwarya Iyer (aishwaryaiyer@csu.fullerton.edu)
+Project Team: 		1. Aishwarya Iyer (https://github.com/aishiyer)
+                  2. Abhishek Mhatre (https://github.com/aB9s)

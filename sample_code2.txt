@@ -1,0 +1,24 @@
+int x, y, z;
+read(x);
+read(y);
+read(z);
+read(w);
+read(v);
+if ( x > y & x > z )
+write(x);
+else if ( y > x & y > z )
+write(y);
+else if ( z > x & z > y )
+write(z);
+else   
+write(w);
+fi;
+while(x>y){
+y:=y+1;
+write(y);
+}
+return 0;
+
+
+
+
