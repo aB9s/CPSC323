@@ -3,7 +3,7 @@ Keywords   = ["int", "float", "boolean" ,"if", "else", "endif", "while", "return
 #Separators
 Separators = ["{", "}", "[", "]", "(" ,")", ";", ",",":"]
 #Operators
-Operators  = ["+", "-", "*", "/", ">", "<", "=","!"]
+Operators  = ["+", "-", "*", "/", ">", "<", "=","!","&" ]
 #Double Operators
 Double_Operators = ["+=","-=","*=","/=","%=","==","<=",">=","!="]
  
@@ -109,12 +109,16 @@ def lexer(Buffer_Array):
                     Lexeme_Array.append(lexeme)
                     lexeme = ""
                 elif c in Operators:
-                    token = "Operator"
-                    Token_Array.append(token)
-                    token = ""
-                    lexeme += c
-                    Lexeme_Array.append(lexeme)
-                    lexeme = ""
+                    if token=="":
+                        token = "Operator"
+                        lexeme += c
+                    else:
+                        token = "Operator"
+                        Token_Array.append(token)
+                        token = ""
+                        lexeme += c
+                        Lexeme_Array.append(lexeme)
+                        lexeme = ""
             if token =="Identifier" and lexeme in Keywords:
                 token = "Keyword"
                 Token_Array.append(token)
