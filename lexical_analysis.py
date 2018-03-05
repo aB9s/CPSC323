@@ -17,24 +17,30 @@ Buffer_Array =[]
  
 def crateBuffer(char):
     global buffer_token
-    if char.isalpha() or char.isdigit(): #possible identifier, keyword, integer or real
+    #identifier/ keyword/ integer/ real
+    if char.isalpha() or char.isdigit():
         if buffer_token !="" and buffer_token[-1] in Operators:
             Buffer_Array.append(buffer_token)
             buffer_token = ""
         buffer_token +=char
-    elif char =="$":                     #possible identifier (last letter of the identifier should be a letter or a $ sign 
+    #identifier (last letter of the identifier should be a letter or a $ sign)
+    elif char =="$":                      
         buffer_token+=char
-    elif buffer_token.isdigit() and char ==".":      #all characters in the buffer are digit and '.' (dot) appeared--> possible real 
+    #all characters in the buffer are digit and '.' (dot) appeared--> possible real
+    elif buffer_token.isdigit() and char ==".":       
         buffer_token+=char
-    elif char in Separators:            #Separator
+    #Separator
+    elif char in Separators:            
         Buffer_Array.append(buffer_token)
         Buffer_Array.append(char)
         buffer_token = ""
-    elif char in Operators:             #Operator        
+    #Operator
+    elif char in Operators:                     
         if buffer_token =="":
             buffer_token+=char
 #             Buffer_Array.append(buffer_token)
-        elif buffer_token != "" and buffer_token[-1] in Operators:     #already an operator present in the buffer --> could be a double operator
+        #already an operator present in the buffer --> could be a double operator
+        elif buffer_token != "" and buffer_token[-1] in Operators:     
             buffer_token+=char
         elif buffer_token[-1].isalpha() or buffer_token[-1].isdigit():
             Buffer_Array.append(buffer_token)
@@ -43,7 +49,8 @@ def crateBuffer(char):
             buffer_token+=char
             Buffer_Array.append(buffer_token)
             buffer_token = ""
-    elif char==" " or char=="\n" or char =="\t":        # Unknown
+    # Unknown
+    elif char==" " or char=="\n" or char =="\t":        
         if char =="!":
             buffer_token+= char
         Buffer_Array.append(buffer_token)
@@ -65,6 +72,7 @@ def lexer(Buffer_Array):
                     #End of the comment section
                 elif c =="!" and token =="Comment":
                     token =""
+                #Identifier/ Keyword
                 elif c.isalpha():
                     #Its a part of comment section, ignore it
                     if token =="Comment":
@@ -72,7 +80,7 @@ def lexer(Buffer_Array):
                     elif token=="" or token=="Identifier":
                         lexeme +=c
                         token = "Identifier"
-                        #Identifier
+                #Identifier
                 elif c =="$" and token =="Identifier":
                      #Its a part of comment section, ignore it
                     if token =="Comment":
@@ -80,24 +88,26 @@ def lexer(Buffer_Array):
                     else:
                         lexeme +=c
                         token = "Identifier"
+                #Integer/ Real
                 elif c.isdigit():
                      #Its a part of comment section, ignore it
                     if token =="Comment":
                         break
                     elif token =="" or token =="Integer":
                         lexeme+=c
-                        token = "Integer"
+                        token = "Integer"                        
                     elif token =="Real":
                         lexeme +=c
                         token = "Real"
                     else:
                         lexeme +=c
                         token = "Unknown"
+                # Real
                 elif c ==".":
                      #Its a part of comment section, ignore it
                     if token =="Comment":
                         break
-                    #Its a object and function separator or an unknown
+                    #Its a separator or an unknown
                     elif token == "Identifier" or token =="Unknown":
                         Token_Array.append(token)
                         Lexeme_Array.append(lexeme)
