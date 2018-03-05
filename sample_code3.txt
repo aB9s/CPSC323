@@ -1,24 +1,26 @@
 ! Rat18S sample source code 3 (more than 20 lines) !
-int main()
-{
-int n;
-int first = 0;
-int second = 1;
+int first = 12.3;
+int second =first/2;
 int next;
-int c=0;
-read(n);
-write(n);
-while(c<n)
-{
-if( c <= 1 )
-next = c;
-else
-{
-next = first + second;
-first = second;
-second += next;
+int count = 0
+
+function rat$(first, second){
+	while (count<10){
+		next %= (second+first)
+	}
+	
+	return next;
 }
-write(next);
+
+function write(arg$){
+	print(arg$)
 }
-return 0;
+
+function main()
+{
+write(first);
+write(second);
+
+write(rat$(first,second));
+
 }

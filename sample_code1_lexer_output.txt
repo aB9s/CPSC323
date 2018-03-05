@@ -12,6 +12,14 @@ Identifier		upper
 Operator		=
 Integer			90
 Separator		;
+Keyword			function
+Identifier		calculate
+Separator		(
+Identifier		a
+Separator		,
+Identifier		fah$
+Separator		)
+Separator		{
 Keyword			while
 Separator		(
 Identifier		fah$
@@ -24,6 +32,7 @@ Operator		=
 Real			23.00
 Separator		;
 Keyword			return
-Integer			8
+Identifier		a
 Separator		;
+Separator		}
 Separator		}

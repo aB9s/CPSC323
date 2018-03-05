@@ -2,10 +2,11 @@
 int a;
 float fah$ =9.8;
 upper=90;
-while (fah$  <upper) {
-a=23.00;
-return 8;
-}
+function calculate(a, fah$){
+	while (fah$  <upper) {
+	a=23.00;
+	return a;
+}}
 
 
 
