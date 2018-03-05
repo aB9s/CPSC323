@@ -1,4 +1,6 @@
 #Keywards
+from fileinput import filename
+from _ast import AugLoad
 Keywords   = ["int", "float", "boolean" ,"if", "else", "endif", "while", "return", "get", "put","function","for"]
 #Separators
 Separators = ["{", "}", "[", "]", "(" ,")", ";", ",",":"]
@@ -8,6 +10,7 @@ Operators  = ["+", "-", "*", "/", ">", "<", "=","!","&" ]
 Double_Operators = ["+=","-=","*=","/=","%=","==","<=",">=","!="]
  
  
+source_filename = ""
 # Machine States
 buffer_token = ""
 Token_Array  = []
@@ -67,16 +70,23 @@ def lexer(Buffer_Array):
                 elif c.isalpha():
                     #Its a part of comment section, ignore it
                     if token =="Comment":
-                        pass
+                        break
                     elif token=="" or token=="Identifier":
                         lexeme +=c
                         token = "Identifier"
                         #Identifier
                 elif c =="$" and token =="Identifier":
-                    lexeme +=c
-                    token = "Identifier"
+                     #Its a part of comment section, ignore it
+                    if token =="Comment":
+                        break
+                    else:
+                        lexeme +=c
+                        token = "Identifier"
                 elif c.isdigit():
-                    if token =="" or token =="Integer":
+                     #Its a part of comment section, ignore it
+                    if token =="Comment":
+                        break
+                    elif token =="" or token =="Integer":
                         lexeme+=c
                         token = "Integer"
                     elif token =="Real":
@@ -86,8 +96,11 @@ def lexer(Buffer_Array):
                         lexeme +=c
                         token = "Unknown"
                 elif c ==".":
+                     #Its a part of comment section, ignore it
+                    if token =="Comment":
+                        break
                     #Its a object and function separator or an unknown
-                    if token == "Identifier" or token =="Unknown":
+                    elif token == "Identifier" or token =="Unknown":
                         Token_Array.append(token)
                         Lexeme_Array.append(lexeme)
                         token = ""
@@ -102,14 +115,21 @@ def lexer(Buffer_Array):
                         token = ""
                         lexeme= ""
                 elif c in Separators:
-                    token = "Separator"
-                    Token_Array.append(token)
-                    token = ""
-                    lexeme += c
-                    Lexeme_Array.append(lexeme)
-                    lexeme = ""
+                     #Its a part of comment section, ignore it
+                    if token =="Comment":
+                        break
+                    else:
+                        token = "Separator"
+                        Token_Array.append(token)
+                        token = ""
+                        lexeme += c
+                        Lexeme_Array.append(lexeme)
+                        lexeme = ""
                 elif c in Operators:
-                    if token=="":
+                     #Its a part of comment section, ignore it
+                    if token =="Comment":
+                        break
+                    elif token=="":
                         token = "Operator"
                         lexeme += c
                     else:
@@ -157,7 +177,9 @@ def lexer(Buffer_Array):
             
     #### EDIT THIS FUNCTION ####    
 def print_to_file():
-    outputFile = open("lexer_output" + ".txt", "w")
+    global source_filename
+    source_filename = source_filename.split(".")
+    outputFile = open(source_filename[0]+"_lexer_output" + ".txt", "w")
     outputFile.write("Token" + "\t\t\t" + "Lexeme\n")
     outputFile.write("-------------------------------\n")
     i = 0
@@ -173,8 +195,9 @@ def print_to_file():
          
  ##Main method
 def main():
-    fileName = input("Enter name of source file to be parsed: ")
-    file = open(fileName, "r")
+    global source_filename
+    source_filename = input("Enter name of source file to be parsed: ")
+    file = open(source_filename, "r")
     source_code_text = file.readlines()
      
     for line in source_code_text:

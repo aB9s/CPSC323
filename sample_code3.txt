@@ -1,4 +1,5 @@
-integer main()
+! Rat18S sample source code 3 (more than 20 lines) !
+int main()
 {
 int n;
 int first = 0;
@@ -15,7 +16,7 @@ else
 {
 next = first + second;
 first = second;
-second = next;
+second += next;
 }
 write(next);
 }
