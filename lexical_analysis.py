@@ -1,3 +1,12 @@
+#####################################################################
+##            CPSC323 Assignment 1 (Lexical Analysis)              ##
+##            Team Members:                                        ##
+##                          1. Aishwarya Iyer                      ##
+##                          2. Abhishek Mhatre                     ##
+##                                                                 ##
+#####################################################################
+
+
 #Keywords
 Keywords   = ["int", "float", "boolean" ,"if", "else", "endif", "while", "return", "get", "put","function","for"]
 #Separators
