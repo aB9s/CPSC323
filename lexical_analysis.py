@@ -1,6 +1,4 @@
-#Keywards
-from fileinput import filename
-from _ast import AugLoad
+#Keywords
 Keywords   = ["int", "float", "boolean" ,"if", "else", "endif", "while", "return", "get", "put","function","for"]
 #Separators
 Separators = ["{", "}", "[", "]", "(" ,")", ";", ",",":"]
@@ -9,7 +7,7 @@ Operators  = ["+", "-", "*", "/", ">", "<", "=","!","&" ]
 #Double Operators
 Double_Operators = ["+=","-=","*=","/=","%=","==","<=",">=","!="]
  
- 
+# File name without extension
 source_filename = ""
 # Machine States
 buffer_token = ""
@@ -51,7 +49,7 @@ def crateBuffer(char):
         Buffer_Array.append(buffer_token)
         buffer_token =""
     
-    
+    ###Function to # 
 def lexer(Buffer_Array):
     token = ""
     lexeme = ""
@@ -171,15 +169,17 @@ def lexer(Buffer_Array):
                 token = ""
                 Lexeme_Array.append(lexeme)
                 lexeme = ""
-     
+                
+    #Clear the buffer for the next line
+    Buffer_Array.clear()
+    
+    #### End of lexer() ####
      
              
             
-    #### EDIT THIS FUNCTION ####    
+    #### Function to print Tokens and Lexemes table into a file ####    
 def print_to_file():
-    global source_filename
-    source_filename = source_filename.split(".")
-    outputFile = open(source_filename[0]+"_lexer_output" + ".txt", "w")
+    outputFile = open(source_filename+"_lexer_output" + ".txt", "w")
     outputFile.write("Token" + "\t\t\t" + "Lexeme\n")
     outputFile.write("-------------------------------\n")
     i = 0
@@ -191,27 +191,40 @@ def print_to_file():
             else:
                 outputFile.write(Token_Array[i] + "\t\t" + Lexeme_Array[i] + "\n")
         i += 1
-    outputFile.close()    
+    outputFile.close()
+    
+    
+    #### End of print_to_file() ####
          
- ##Main method
 def main():
     global source_filename
-    source_filename = input("Enter name of source file to be parsed: ")
-    file = open(source_filename, "r")
+    #Get file 
+    filename = input("Enter name of source file to be parsed: ")
+    file = open(filename, "r")
+    #Remove extension from the source filename
+    source_filename = filename.split(".")[0]
+    
     source_code_text = file.readlines()
      
     for line in source_code_text:
         i = 0
+        
         while i < len(line):
+            #Read each token from the source code line and add it into a buffer
             crateBuffer(line[i])
             i += 1
             
-    lexer(Buffer_Array)
-    print(Buffer_Array)
-     
+        #Sort tokens into lexemes
+        lexer(Buffer_Array)
+    
+    
+    #Print table to a file 
     print_to_file()
  
+    #Close the file
     file.close()
+    
+    #### End of main() ####
      
 if __name__ ==  "__main__":
     main()
