@@ -1,0 +1,27 @@
+! RAT18S sample code
+more than 20 lines !
+
+function convert$ [fahr:int]
+{
+           return 5 * (fahr -32) / 9;
+}
+function maxTemp[fahr:int]
+{
+	newTemp = (fahr*54)/100
+}
+
+%%
+real min, max, average
+! Calculate new temperature !
+get(min, max)
+
+
+average = 78.2
+
+while(min !=average)
+{
+put(max%10)
+
+min = min+(average/10)
+}
+

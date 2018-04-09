@@ -1,5 +1,5 @@
-! this is comment for this sample code which
-   converts  Fahrenheit into Celcius !
+! RAT18S sample code
+more than 10 less than 20 lines !
 
 function convert$ [fahr:int]
 {
