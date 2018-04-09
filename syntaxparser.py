@@ -62,7 +62,6 @@ def nextLexeme(lexer_table,i):
 
 #Main grammar start here
 def RAT18S():
-    displayFlag = True
     #run lexer
     filename = lexer.main()
     
@@ -72,8 +71,6 @@ def RAT18S():
     lexer_output_file = open(filename+"_lexer_output" + ".txt", "r")
     lexer_table = lexer_output_file.readlines()
     outputFile = open(filename+"_syntax_output" + ".txt", "w")
-    print ("------------------------------------------------------")
-    print ("Syntax Analysis for file: " + filename)
     
     #first two lines of the lexer output table are heading
     #therefore i starts from 2
@@ -89,7 +86,7 @@ def RAT18S():
         #R1. <Rat18S>  ::=   <Opt Function Definitions>   %%  <Opt Declaration List>  <Statement List> 
         print ("Token: " + token + " --- Lexeme: " + lexeme)
         outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-        syntactic_correct, i = OptFunctionDefinitions(lexer_table, i, displayFlag, lexeme, token, outputFile)
+        syntactic_correct, i = OptFunctionDefinitions(lexer_table, i, lexeme, token, outputFile)
         
         if (i < len(lexer_table) - 1):
             line_number, token, lexeme, i = nextLexeme(lexer_table, i)
@@ -97,8 +94,8 @@ def RAT18S():
                 i += 1
                 print ("Token: " + token + " --- Lexeme: " + lexeme)
                 outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-                syntactic_correct, i = OptDeclarationList(lexer_table, i, displayFlag, lexeme, token, outputFile)
-                syntactic_correct, i = StatementList(lexer_table, i, displayFlag, lexeme, token, outputFile)
+                syntactic_correct, i = OptDeclarationList(lexer_table, i, lexeme, token, outputFile)
+                syntactic_correct, i = StatementList(lexer_table, i, lexeme, token, outputFile)
             else:
                 print ("[Line Number:" + line_number+"]="+"Syntax Error: Missing %% at the end of <Opt Function Definitions>\n")
                 outputFile.write("Syntax Error: Missing %% at the end of <Opt Funtion Definitions>]\n")
@@ -115,63 +112,56 @@ def RAT18S():
 #End of RAT18S
 
 #Function for R2. <Opt Function Definitions> ::= <Function Definitions>     |  <Empty>
-def OptFunctionDefinitions(lexer_table, i, displayFlag, lexeme, token, outputFile):
+def OptFunctionDefinitions(lexer_table, i, lexeme, token, outputFile):
     syntactic_correct = False
 #     line_number, token, lexeme, i = nextLexeme(lexer_table, i + 1)
     if (lexeme == "function"):
 #         line_number, token, lexeme, i = nextLexeme(lexer_table, i + 1)    
         print ("Token: " + token + " --- Lexeme: " + lexeme)
         outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-        if (displayFlag):
-            print ("     <Opt Function Definitions> ::= <FunctionDefinitions>\n")
-            outputFile.write("     <Opt Function Definitions> ::= <FunctionDefinitions>\n")
-        syntactic_correct, i = FunctionDefinitions(lexer_table, i, displayFlag, lexeme, token, outputFile)
+        print ("     <Opt Function Definitions> ::= <FunctionDefinitions>\n")
+        outputFile.write("     <Opt Function Definitions> ::= <FunctionDefinitions>\n")
+        syntactic_correct, i = FunctionDefinitions(lexer_table, i, lexeme, token, outputFile)
     
     else:
         print ("Token: " + token + " --- Lexeme: " + lexeme)
         outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-        if (displayFlag):
-            print ("     <Opt Function Definitions> ::= <Empty>\n")
-            outputFile.write("     <Opt Function Definitions> ::= <Empty>\n")
-        syntactic_correct, i = Empty(lexer_table, i, displayFlag, lexeme, token, outputFile)
+        print ("     <Opt Function Definitions> ::= <Empty>\n")
+        outputFile.write("     <Opt Function Definitions> ::= <Empty>\n")
+        syntactic_correct, i = Empty(lexer_table, i, lexeme, token, outputFile)
     
     return syntactic_correct, i
 #End of OptFunctionDefinitions
 
 
 #Function for R3. <Function Definitions>  ::= <Function> <Function Definitions Prime>   
-def FunctionDefinitions(lexler_table, i, displayFlag, lexeme, token, outputFile):
+def FunctionDefinitions(lexler_table, i, lexeme, token, outputFile):
     syntactic_correct = False
-    if (displayFlag):
-        print ("     <Function Definitions> ::= <Function><Function Definitions Prime>\n")
-        outputFile.write("     <Function Definitions> ::= <Function><Function Definitions Prime>\n")
-    syntactic_correct, i = Function(lexler_table, i, displayFlag, lexeme, token, outputFile)
-    syntactic_correct, i = FunctionDefinitionsPrime(lexler_table, i, displayFlag, lexeme, token, outputFile)
-    
-    if (displayFlag):
-        print ("     <Function Definitions> ::= <Function>\n")
-        outputFile.write("     <Function Definitions> ::= <Function>\n")
+    print ("     <Function Definitions> ::= <Function><Function Definitions Prime>\n")
+    outputFile.write("     <Function Definitions> ::= <Function><Function Definitions Prime>\n")
+    syntactic_correct, i = Function(lexler_table, i, lexeme, token, outputFile)
+    syntactic_correct, i = FunctionDefinitionsPrime(lexler_table, i, lexeme, token, outputFile)
+    print ("     <Function Definitions> ::= <Function>\n")
+    outputFile.write("     <Function Definitions> ::= <Function>\n")
 
     return syntactic_correct, i
 #End of FunctionDefinitions
 
 #Function for R4.<Function Definitions Prime>  ::= <Function Definitions> | Epsilon
-def FunctionDefinitionsPrime(lexer_table, i, displayFlag, lexeme, token, outputFile):
+def FunctionDefinitionsPrime(lexer_table, i, lexeme, token, outputFile):
     syntactic_correct = False
     line_number, token, lexeme, i = nextLexeme(lexer_table, i + 1)
     print ("Token: " + token + " --- Lexeme: " + lexeme)
     outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
     if (lexeme == "%%"):
-        if (displayFlag):
-            print ("     <Function Definitions Prime> ::= Epsilon")
-            outputFile.write("     <Function Definitions Prime> ::= Epsilon\n")
+        print ("     <Function Definitions Prime> ::= Epsilon")
+        outputFile.write("     <Function Definitions Prime> ::= Epsilon\n")
         syntactic_correct = True
             
     elif (lexeme == "function"): 
-        if (displayFlag):
-            print ("     <Function Definitions Prime> ::= <Function Definitions>\n")
-            outputFile.write("     <Function Definitions Prime> ::= <Function Definitions>\n")
-        syntactic_correct, i = FunctionDefinitions(lexer_table, i, displayFlag, lexeme, token, outputFile)
+        print ("     <Function Definitions Prime> ::= <Function Definitions>\n")
+        outputFile.write("     <Function Definitions Prime> ::= <Function Definitions>\n")
+        syntactic_correct, i = FunctionDefinitions(lexer_table, i, lexeme, token, outputFile)
         
     else:
         error_string ="[Line Number:" + line_number+"]="+"Syntax Error: Invalid token.\n" 
@@ -185,10 +175,9 @@ def FunctionDefinitionsPrime(lexer_table, i, displayFlag, lexeme, token, outputF
 
 
 # Function for R5.<Function> ::= function  <Identifier>  [ <Opt Parameter List> ]  <Opt Declaration List>  <Body>
-def Function(lexer_table, i, displayFlag, lexeme, token, outputFile):
+def Function(lexer_table, i, lexeme, token, outputFile):
     syntactic_correct = False
-    if (displayFlag):
-        print ("     <Function> ::= function <Identifier> [ <Opt Parameter List> ] <Opt Declaration List> <Body>\n")
+    print ("     <Function> ::= function <Identifier> [ <Opt Parameter List> ] <Opt Declaration List> <Body>\n")
     
     if (lexeme == "function"):
         line_number, token, lexeme, i = nextLexeme(lexer_table, i + 1)
@@ -202,15 +191,15 @@ def Function(lexer_table, i, displayFlag, lexeme, token, outputFile):
             if (lexeme == "["):
                 print ("Token: " + token + " --- Lexeme: " + lexeme)
                 outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-                syntactic_correct, i = OptParameterList(lexer_table, i, displayFlag, lexeme, token, outputFile)    
+                syntactic_correct, i = OptParameterList(lexer_table, i, lexeme, token, outputFile)    
                 line_number, token, lexeme, i = nextLexeme(lexer_table, i)
                     
                 if (lexeme == "]"):
                     print ("Token: " + token + " --- Lexeme: " + lexeme)
                     outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
                     line_number, token, lexeme, i = nextLexeme(lexer_table, i + 1)    
-                    syntactic_correct, i = OptDeclarationList(lexer_table, i, displayFlag, lexeme, token, outputFile)
-                    syntactic_correct, i = Body(lexer_table, i, displayFlag, lexeme, token, outputFile)
+                    syntactic_correct, i = OptDeclarationList(lexer_table, i, lexeme, token, outputFile)
+                    syntactic_correct, i = Body(lexer_table, i, lexeme, token, outputFile)
 
                 else:
                     error_string ="[Line Number:" + line_number+"]="+"Syntax Error: Missing ']'.\n" 
@@ -243,43 +232,40 @@ def Function(lexer_table, i, displayFlag, lexeme, token, outputFile):
 #End of Function()
 
 #Function for R6.<Opt Parameter List> ::=  <Parameter List>    |     <Empty>
-def OptParameterList(lexer_table, i, displayFlag, lexeme, token, outputFile):
+def OptParameterList(lexer_table, i, lexeme, token, outputFile):
     syntactic_correct = False
     line_number, token, lexeme, i = nextLexeme(lexer_table, i + 1)
     if (lexeme != "]"):
         i -= 1
-        if (displayFlag):
-            print ("     <Opt Parameter List> ::= <Parameter List>\n")
-            outputFile.write("     <Opt Parameter List> ::= <Parameter List>\n")
-        syntactic_correct, i = ParameterList(lexer_table, i, displayFlag, lexeme, token, outputFile)        
+        print ("     <Opt Parameter List> ::= <Parameter List>\n")
+        outputFile.write("     <Opt Parameter List> ::= <Parameter List>\n")
+        syntactic_correct, i = ParameterList(lexer_table, i, lexeme, token, outputFile)        
         
     elif (lexeme == "]"):
         print ("Token: " + token + " --- Lexeme: " + lexeme)
         outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-        if (displayFlag):
-            print ("     <Opt Parameter List> ::= <Empty>\n")
-            outputFile.write("     <Opt Parameter List> ::= <Empty>\n")
-        syntactic_correct, i = Empty(lexer_table, i, displayFlag, lexeme, token, outputFile)
+        print ("     <Opt Parameter List> ::= <Empty>\n")
+        outputFile.write("     <Opt Parameter List> ::= <Empty>\n")
+        syntactic_correct, i = Empty(lexer_table, i, lexeme, token, outputFile)
         
     return syntactic_correct, i
 #End of OptParameterList()
 
 #Function for R7.<Parameter List>  ::=  <Parameter> , <Parameter List Prime>
-def ParameterList(lexer_table, i, displayFlag, lexeme, token, outputFile):
+def ParameterList(lexer_table, i, lexeme, token, outputFile):
     syntactic_correct = False
     
-    if (displayFlag):
-        print ("     <Parameter List> ::= <Parameter> , <Parameter List Prime>\n")
-        outputFile.write("     <Parameter List> ::= <Parameter> , <Parameter List Prime>\n")
+    print ("     <Parameter List> ::= <Parameter> , <Parameter List Prime>\n")
+    outputFile.write("     <Parameter List> ::= <Parameter> , <Parameter List Prime>\n")
 
-    syntactic_correct, i = Parameter(lexer_table, i, displayFlag, lexeme, token, outputFile)
-    syntactic_correct, i = ParameterListPrime(lexer_table, i, displayFlag, lexeme, token, outputFile)
+    syntactic_correct, i = Parameter(lexer_table, i, lexeme, token, outputFile)
+    syntactic_correct, i = ParameterListPrime(lexer_table, i, lexeme, token, outputFile)
     
     return syntactic_correct, i
 #End of ParameterList()
 
 #Function for R8.<Parameter List Prime>  ::= <Parameter> | Epsilon
-def ParameterListPrime(lexer_table, i, displayFlag, lexeme, token, outputFile):
+def ParameterListPrime(lexer_table, i, lexeme, token, outputFile):
     syntactic_correct = False
     
     line_number, token, lexeme, i = nextLexeme(lexer_table, i + 1)
@@ -287,34 +273,31 @@ def ParameterListPrime(lexer_table, i, displayFlag, lexeme, token, outputFile):
     if (lexeme == ","):
         print ("Token: " + token + " --- Lexeme: " + lexeme)
         outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-        if (displayFlag):
-            print ("     <Parameter List Prime> ::= ,<Parameter List>\n")
-            outputFile.write("     <Parameter List Prime> ::= ,<Parameter List>\n")
-        syntactic_correct, i = ParameterList(lexer_table, i, displayFlag, lexeme, token, outputFile)
+        print ("     <Parameter List Prime> ::= ,<Parameter List>\n")
+        outputFile.write("     <Parameter List Prime> ::= ,<Parameter List>\n")
+        syntactic_correct, i = ParameterList(lexer_table, i, lexeme, token, outputFile)
     
     else:
-        if (displayFlag):
-            print ("     <Parameter List Prime> ::= Epsilon")
-            outputFile.write("     <Parameter List Prime> ::= Epsilon\n")
+        print ("     <Parameter List Prime> ::= Epsilon")
+        outputFile.write("     <Parameter List Prime> ::= Epsilon\n")
         syntactic_correct = True
     
     return syntactic_correct, i
 #End of ParameterListPrime()
 
 #Function for R9.<Parameter>  ::= <IDs> : <Qualifier>
-def Parameter(lexer_table, i, displayFlag, lexeme, token, outputFile):
+def Parameter(lexer_table, i, lexeme, token, outputFile):
     syntactic_correct = False
-    if (displayFlag):
-        print ("     <Parameter> ::= <IDS> := <Qualifier>\n")
-        outputFile.write("     <Parameter> ::= <IDS> := <Qualifier>\n")
+    print ("     <Parameter> ::= <IDS> := <Qualifier>\n")
+    outputFile.write("     <Parameter> ::= <IDS> := <Qualifier>\n")
 
-    syntactic_correct, i = IDs(lexer_table, i, displayFlag, lexeme, token, outputFile)
+    syntactic_correct, i = IDs(lexer_table, i, lexeme, token, outputFile)
     line_number, token, lexeme, i = nextLexeme(lexer_table, i + 1)
     
     if(lexeme == ":"):
         print ("Token: " + token + " --- Lexeme: " + lexeme)
         outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-        syntactic_correct, i = Qualifier(lexer_table, i, displayFlag, lexeme, token, outputFile) 
+        syntactic_correct, i = Qualifier(lexer_table, i, lexeme, token, outputFile) 
     
     else:
         error_string ="[Line Number:" + line_number+"]="+"Syntax Error: Missing Identifier.\n" 
@@ -328,16 +311,15 @@ def Parameter(lexer_table, i, displayFlag, lexeme, token, outputFile):
 #End of Parameter()
 
 #Function for R10. <Qualifier> ::= int     |    boolean    |  real 
-def Qualifier(lexer_table, i, displayFlag, lexeme, token, outputFile):
+def Qualifier(lexer_table, i, lexeme, token, outputFile):
     syntactic_correct = False
     line_number, token, lexeme, i = nextLexeme(lexer_table, i + 1)
     
     if (lexeme == "int") or (lexeme == "boolean") or (lexeme == "real"):
         print ("Token: " + token + " --- Lexeme: " + lexeme)
         outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-        if(displayFlag):
-            print ("     <Qualifier> ::= " + lexeme)
-            outputFile.write("     <Qualifier> ::= " + lexeme + "\n")
+        print ("     <Qualifier> ::= " + lexeme)
+        outputFile.write("     <Qualifier> ::= " + lexeme + "\n")
         syntactic_correct = True
     
     else:
@@ -351,21 +333,20 @@ def Qualifier(lexer_table, i, displayFlag, lexeme, token, outputFile):
 #End of Qualifier()
 
 #Function for R11.<Body>  ::=  {  < Statement List>  }
-def Body(lexer_table, i, displayFlag, lexeme, token, outputFile):
+def Body(lexer_table, i, lexeme, token, outputFile):
     syntactic_correct = False
     line_number, token, lexeme, i = nextLexeme(lexer_table, i + 1)
     
     if (lexeme == "{"):
         print ("Token: " + token + " --- Lexeme: " + lexeme)
         outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-        syntactic_correct, i = StatementList(lexer_table, i, displayFlag, lexeme, token, outputFile)
+        syntactic_correct, i = StatementList(lexer_table, i, lexeme, token, outputFile)
         line_number, token, lexeme, i = nextLexeme(lexer_table, i + 1)
         if (lexeme == "}"):
             print ("Token: " + token + " --- Lexeme: " + lexeme)
             outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-            if (displayFlag):
-                print ("     <Body> ::= {<Statement List>}")
-                outputFile.write("     <Body> ::= {<Statement List>}\n")
+            print ("     <Body> ::= {<Statement List>}")
+            outputFile.write("     <Body> ::= {<Statement List>}\n")
         
         else:
             error_string ="[Line Number:" + line_number+"]="+"Syntax Error: Missing '}'.\n" 
@@ -385,23 +366,21 @@ def Body(lexer_table, i, displayFlag, lexeme, token, outputFile):
 #End of Body
 
 #Function for R12.<Opt Declaration List> ::= <Declaration List>   |    <Empty>
-def OptDeclarationList(lexer_table, i, displayFlag, lexeme, token, outputFile):
+def OptDeclarationList(lexer_table, i, lexeme, token, outputFile):
     syntactic_correct = False
     line_number, token, lexeme, i = nextLexeme(lexer_table, i)
     if (lexeme == "int") or (lexeme == "boolean") or (lexeme == "real"):
-        if (displayFlag):
-            print ("     <OptDeclarationList> ::= <DeclarationList>")
-            outputFile.write("     <OptDeclarationList> ::= <DeclarationList>\n")
+        print ("     <OptDeclarationList> ::= <DeclarationList>")
+        outputFile.write("     <OptDeclarationList> ::= <DeclarationList>\n")
         i -= 1
-        syntactic_correct, i = DeclarationList(lexer_table, i, displayFlag, lexeme, token, outputFile)
+        syntactic_correct, i = DeclarationList(lexer_table, i, lexeme, token, outputFile)
 
     else:
         print ("Token: " + token + " --- Lexeme: " + lexeme)
         outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-        if (displayFlag):
-            print ("     <OptDeclarationList> ::= Epsilon")
-            outputFile.write("     <OptDeclarationList> ::= <Empty>\n")
-        syntactic_correct, i = Empty(lexer_table, i, displayFlag, lexeme, token, outputFile)
+        print ("     <OptDeclarationList> ::= Epsilon")
+        outputFile.write("     <OptDeclarationList> ::= <Empty>\n")
+        syntactic_correct, i = Empty(lexer_table, i, lexeme, token, outputFile)
 
 
     return syntactic_correct, i - 1
@@ -409,14 +388,13 @@ def OptDeclarationList(lexer_table, i, displayFlag, lexeme, token, outputFile):
 
 
 #Function for R13.<Declaration List> ::= <Declaration> <Declaration List Prime>
-def DeclarationList(lexer_table, i, displayFlag, lexeme, token, outputFile):
+def DeclarationList(lexer_table, i, lexeme, token, outputFile):
     syntactic_correct = False
-    if (displayFlag):
-        print ("     <DeclarationList> ::= <Declaration>;<DeclarationLlineNumberist>\n")
-        outputFile.write("     <DeclarationList> ::= <Declaration>;<DeclarationList>\n")
+    print ("     <DeclarationList> ::= <Declaration>;<DeclarationLlineNumberist>\n")
+    outputFile.write("     <DeclarationList> ::= <Declaration>;<DeclarationList>\n")
         
-    syntactic_correct, i = Declaration(lexer_table, i, displayFlag, lexeme, token, outputFile)
-    syntactic_correct, i = DeclarationListPrime(lexer_table, i, displayFlag, lexeme, token, outputFile)
+    syntactic_correct, i = Declaration(lexer_table, i, lexeme, token, outputFile)
+    syntactic_correct, i = DeclarationListPrime(lexer_table, i, lexeme, token, outputFile)
 
     return syntactic_correct, i
 #End of DeclerationList()
@@ -424,34 +402,31 @@ def DeclarationList(lexer_table, i, displayFlag, lexeme, token, outputFile):
 
 # Function: DeclarationList
 #Function for R14.<Declaration List Prime> ::= <Declaration List> ! Epsilon
-def DeclarationListPrime(lexer_table, i, displayFlag, lexeme, token, outputFile):
+def DeclarationListPrime(lexer_table, i, lexeme, token, outputFile):
     syntactic_correct = False
     line_number, token, lexeme, i = nextLexeme(lexer_table, i + 1)
     if (lexeme == "real") or (lexeme == "integer") or (lexeme == "boolean"):
-        if (displayFlag):
-            print ("     <Declaration List Prime> ::= ;<Declaration List>\n")
-            outputFile.write("     <Declaration List Prime> ::= ;<Declaration List>\n")
+        print ("     <Declaration List Prime> ::= ;<Declaration List>\n")
+        outputFile.write("     <Declaration List Prime> ::= ;<Declaration List>\n")
         i -= 1
-        syntactic_correct, i = DeclarationList(lexer_table, i, displayFlag, lexeme, token, outputFile)
+        syntactic_correct, i = DeclarationList(lexer_table, i, lexeme, token, outputFile)
 
     else:
-        if (displayFlag):
-            print ("     <Declaration List Prime> ::= Epsilon")
-            outputFile.write("     <Declaration List Prime> ::= Epsilon\n")
+        print ("     <Declaration List Prime> ::= Epsilon")
+        outputFile.write("     <Declaration List Prime> ::= Epsilon\n")
         syntactic_correct = True
 
     return syntactic_correct, i
 #End of DeclerationListPrime()
 
 #Function for R15. <Declaration> ::=   <Qualifier > <IDs>                   
-def Declaration(lexer_table, i, displayFlag, lexeme, token, outputFile):
+def Declaration(lexer_table, i, lexeme, token, outputFile):
     syntactic_correct = False
-    if (displayFlag):
-        print ("     <Declaration> ::= <Qualifier> <IDs>\n")
-        outputFile.write("     <Declaration> ::= <Qualifier> <IDs>\n")
+    print ("     <Declaration> ::= <Qualifier> <IDs>\n")
+    outputFile.write("     <Declaration> ::= <Qualifier> <IDs>\n")
 
-    syntactic_correct, i = Qualifier(lexer_table, i, displayFlag, lexeme, token, outputFile)
-    syntactic_correct, i = IDs(lexer_table, i, displayFlag, lexeme, token, outputFile)
+    syntactic_correct, i = Qualifier(lexer_table, i, lexeme, token, outputFile)
+    syntactic_correct, i = IDs(lexer_table, i, lexeme, token, outputFile)
     line_number, token, lexeme, i = nextLexeme(lexer_table, i + 1)
     if (lexeme == ";"):
         print ("Token: " + token + " --- Lexeme: " + lexeme) 
@@ -467,16 +442,15 @@ def Declaration(lexer_table, i, displayFlag, lexeme, token, outputFile):
 #End of Declaration
 
 #Function for R16.<IDs> ::=     <Identifier>    | <Identifier>, <IDs>
-def IDs(lexer_table, i, displayFlag, lexeme, token, outputFile):
+def IDs(lexer_table, i, lexeme, token, outputFile):
     syntactic_correct = False    
     line_number, token, lexeme, i = nextLexeme(lexer_table, i + 1)
     if (token == "Identifier"):
         print ("Token: " + token + " --- Lexeme: " + lexeme) 
         outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-        if (displayFlag):
-            print ("     <IDs> ::= <Identifier>")
-            outputFile.write("     <IDs> ::= <Identifier>\n")
-        syntactic_correct, i = IDsPrime(lexer_table, i, displayFlag, lexeme, token, outputFile)
+        print ("     <IDs> ::= <Identifier>")
+        outputFile.write("     <IDs> ::= <Identifier>\n")
+        syntactic_correct, i = IDsPrime(lexer_table, i, lexeme, token, outputFile)
     
     else:
         error_string ="[Line Number:" + line_number+"]="+"Syntax Error: Missing Identifier.\n" 
@@ -491,20 +465,18 @@ def IDs(lexer_table, i, displayFlag, lexeme, token, outputFile):
 
 # Function: IDs
 #Function for R16.<IDs> ::=     <IDs>    | Epsilon
-def IDsPrime(lexer_table, i, displayFlag, lexeme, token, outputFile):
+def IDsPrime(lexer_table, i, lexeme, token, outputFile):
     syntactic_correct = False
     line_number, token, lexeme, i = nextLexeme(lexer_table, i + 1)
     if (lexeme == ","):
-        if (displayFlag):
-            print ("     <IDs Prime> ::= ,<IDs>\n")
+        print ("     <IDs Prime> ::= ,<IDs>\n")
         print ("Token: " + token + " --- Lexeme: " + lexeme)
         outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-        syntactic_correct, i = IDs(lexer_table, i, displayFlag, lexeme, token, outputFile)
+        syntactic_correct, i = IDs(lexer_table, i, lexeme, token, outputFile)
 
     else:
-        if (displayFlag):
-            print ("     <IDsPrime> ::= Epsilon")
-            outputFile.write("     <IDsPrime> ::= Epsilon\n")
+        print ("     <IDsPrime> ::= Epsilon")
+        outputFile.write("     <IDsPrime> ::= Epsilon\n")
         syntactic_correct = True
         i -= 1
     
@@ -513,39 +485,36 @@ def IDsPrime(lexer_table, i, displayFlag, lexeme, token, outputFile):
 
 
 #Function for R17.<Statement List> ::=   <Statement> <Statement List Prime>
-def StatementList(lexer_table, i, displayFlag, lexeme, token, outputFile):
+def StatementList(lexer_table, i, lexeme, token, outputFile):
     syntactic_correct = False
-    if (displayFlag):
-        print ("     <Statement List> ::= <Statement> <Statement List Prime>")
-        outputFile.write("     <Statement List> ::= <Statement> <Statement List Prime>\n")
+    print ("     <Statement List> ::= <Statement> <Statement List Prime>")
+    outputFile.write("     <Statement List> ::= <Statement> <Statement List Prime>\n")
 
-    syntactic_correct, i = Statement(lexer_table, i, displayFlag, lexeme, token, outputFile)
-    syntactic_correct, i = StatementListPrime(lexer_table, i, displayFlag, lexeme, token, outputFile)
+    syntactic_correct, i = Statement(lexer_table, i, lexeme, token, outputFile)
+    syntactic_correct, i = StatementListPrime(lexer_table, i, lexeme, token, outputFile)
     
     return syntactic_correct, i
 #End of SratementList()
 
 
 #Function for R18.<Statement List Prime> ::=  <Statement List> | Epsilon
-def StatementListPrime(lexer_table, i, displayFlag, lexeme, token, outputFile):
+def StatementListPrime(lexer_table, i, lexeme, token, outputFile):
     syntactic_correct = False
     line_number, token, lexeme, i = nextLexeme(lexer_table, i + 1)
     
     if (lexeme != "}") and (lexeme != "$$"):
         print ("Token: " + token + " --- Lexeme: " + lexeme)
         outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-        if (displayFlag):
-            print ("     <Statement List Prime> ::= <Statement List>")
-            outputFile.write("     <Statement List Prime> ::= <Statement List>\n")
+        print ("     <Statement List Prime> ::= <Statement List>")
+        outputFile.write("     <Statement List Prime> ::= <Statement List>\n")
         i -= 1
 
-        syntactic_correct, i = StatementList(lexer_table, i, displayFlag, lexeme, token, outputFile)
+        syntactic_correct, i = StatementList(lexer_table, i, lexeme, token, outputFile)
 
     else:
-        if (displayFlag):
-            print ("     <Statement List Prime> ::= Epsilon")
-            outputFile.write("     <Statement List Prime> ::= Epsilon\n")
-            syntactic_correct = True
+        print ("     <Statement List Prime> ::= Epsilon")
+        outputFile.write("     <Statement List Prime> ::= Epsilon\n")
+        syntactic_correct = True
         i -= 1
     
     return syntactic_correct, i
@@ -553,65 +522,58 @@ def StatementListPrime(lexer_table, i, displayFlag, lexeme, token, outputFile):
 
 
 #Function for R19. <Statement> ::=   <Compound>  |  <Assign>  |   <If>  |  <Return>   | <Print>   |   <Scan>   |  <While> 
-def Statement(lexer_table, i, displayFlag, lexeme, token, outputFile):
+def Statement(lexer_table, i, lexeme, token, outputFile):
     syntactic_correct = False
     line_number, token, lexeme, i = nextLexeme(lexer_table, i + 1)
     #Compound
     if(lexeme == "{"):
         print ("Token: " + token + " --- Lexeme: " + lexeme)
         outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-        if (displayFlag):
-            print ("     <Statement> ::= <Compound>")
-            outputFile.write("     <Statement> ::= <Compound>\n")
-        syntactic_correct, i = Compound(lexer_table, i, displayFlag, lexeme, token, outputFile)
+        print ("     <Statement> ::= <Compound>")
+        outputFile.write("     <Statement> ::= <Compound>\n")
+        syntactic_correct, i = Compound(lexer_table, i, lexeme, token, outputFile)
     #Assign 
     elif (token == "Identifier"):
         print ("Token: " + token + " --- Lexeme: " + lexeme)
         outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-        if (displayFlag):
-            print ("     <Statement> ::= <Assign>")
-            outputFile.write("     <Statement> ::= <Assign>\n")
-        syntactic_correct, i = Assign(lexer_table, i, displayFlag, lexeme, token, outputFile)
+        print ("     <Statement> ::= <Assign>")
+        outputFile.write("     <Statement> ::= <Assign>\n")
+        syntactic_correct, i = Assign(lexer_table, i, lexeme, token, outputFile)
     #If
     elif (lexeme == "if"):
         print ("Token: " + token + " --- Lexeme: " + lexeme)
         outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-        if (displayFlag):
-            print ("     <Statement> ::= <If>")
-            outputFile.write("     <Statement> ::= <If>\n")
-        syntactic_correct, i = If(lexer_table, i, displayFlag, lexeme, token, outputFile)
+        print ("     <Statement> ::= <If>")
+        outputFile.write("     <Statement> ::= <If>\n")
+        syntactic_correct, i = If(lexer_table, i, lexeme, token, outputFile)
     #Return
     elif (lexeme == "return"):
         print ("Token: " + token + " --- Lexeme: " + lexeme)
         outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-        if (displayFlag):
-            print ("     <Statement> ::= <Return>")
-            outputFile.write("     <Statement> ::= <Return>\n")
-        syntactic_correct, i = Return(lexer_table, i, displayFlag, lexeme, token, outputFile)
+        print ("     <Statement> ::= <Return>")
+        outputFile.write("     <Statement> ::= <Return>\n")
+        syntactic_correct, i = Return(lexer_table, i, lexeme, token, outputFile)
     #Print
     elif (lexeme == "put"):
         print ("Token: " + token + " --- Lexeme: " + lexeme)
         outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-        if (displayFlag):
-            print ("     <Statement> ::= <Print>")
-            outputFile.write("     <Statement> ::= <Print>\n")
-        syntactic_correct, i = Print(lexer_table, i, displayFlag, lexeme, token, outputFile)
+        print ("     <Statement> ::= <Print>")
+        outputFile.write("     <Statement> ::= <Print>\n")
+        syntactic_correct, i = Print(lexer_table, i, lexeme, token, outputFile)
     #Scan
     elif (lexeme == "get"):
         print ("Token: " + token + " --- Lexeme: " + lexeme)
         outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-        if (displayFlag):
-            print ("     <Statement> ::= <Scan>")
-            outputFile.write("     <Statement> ::= <Scan>\n")
-        syntactic_correct, i = Scan(lexer_table, i, displayFlag, lexeme, token, outputFile)
+        print ("     <Statement> ::= <Scan>")
+        outputFile.write("     <Statement> ::= <Scan>\n")
+        syntactic_correct, i = Scan(lexer_table, i, lexeme, token, outputFile)
     #While
     elif (lexeme == "while"):
         print ("Token: " + token + " --- Lexeme: " + lexeme)
         outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-        if (displayFlag):
-            print ("     <Statement> ::= <While>")
-            outputFile.write("     <Statement> ::= <While>\n")
-        syntactic_correct, i = While(lexer_table, i, displayFlag, lexeme, token, outputFile)
+        print ("     <Statement> ::= <While>")
+        outputFile.write("     <Statement> ::= <While>\n")
+        syntactic_correct, i = While(lexer_table, i, lexeme, token, outputFile)
     else:
         error_string ="[Line Number:" + line_number+"]="+"Syntax Error: Invalid Statement.\n" 
         print (error_string)
@@ -623,20 +585,19 @@ def Statement(lexer_table, i, displayFlag, lexeme, token, outputFile):
 #End of Statement()
 
 #Function for R20.<Compound> ::=   {  <Statement List>  } 
-def Compound(lexer_table, i, displayFlag, lexeme, token, outputFile):
+def Compound(lexer_table, i, lexeme, token, outputFile):
     syntactic_correct = False
     
     if (lexeme == "{"):
         print ("Token: " + token + " --- Lexeme: " + lexeme)
         outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-        syntactic_correct, i = StatementList(lexer_table, i, displayFlag, lexeme, token, outputFile)
+        syntactic_correct, i = StatementList(lexer_table, i, lexeme, token, outputFile)
         line_number, token, lexeme, i = nextLexeme(lexer_table, i + 1)
         if (lexeme == "}"):
             print ("Token: " + token + " --- Lexeme: " + lexeme)
             outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-            if (displayFlag):
-                print ("     <Compound> ::= {<Statement List>}")
-                outputFile.write("     <Compound> ::= {<Statement List>}\n")
+            print ("     <Compound> ::= {<Statement List>}")
+            outputFile.write("     <Compound> ::= {<Statement List>}\n")
         
         else:
             error_string ="[Line Number:" + line_number+"]="+"Syntax Error: Missing '}'.\n" 
@@ -656,7 +617,7 @@ def Compound(lexer_table, i, displayFlag, lexeme, token, outputFile):
 #End of Compound()
 
 #Function for R21. <Assign> ::=     <Identifier> = <Expression> ;
-def Assign(lexer_table, i, displayFlag, lexeme, token, outputFile):
+def Assign(lexer_table, i, lexeme, token, outputFile):
     syntactic_correct = False
     
     if (token == "Identifier"):
@@ -665,7 +626,7 @@ def Assign(lexer_table, i, displayFlag, lexeme, token, outputFile):
         if (lexeme == "="):
             print ("Token: " + token + " --- Lexeme: " + lexeme)
             outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-            syntactic_correct, i = Expression(lexer_table, i, displayFlag, lexeme, token, outputFile)
+            syntactic_correct, i = Expression(lexer_table, i, lexeme, token, outputFile)
             
             
             line_number, token, lexeme, i = nextLexeme(lexer_table, i + 1)
@@ -673,9 +634,8 @@ def Assign(lexer_table, i, displayFlag, lexeme, token, outputFile):
             if (lexeme == ";"):
                 print ("Token: " + token + " --- Lexeme: " + lexeme)
                 outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-                if (displayFlag):
-                    print ("     <Assign> ::= <Identifier> := <Expression);")
-                    outputFile.write("     <Assign> ::= <Identifier> := <Expression);\n")
+                print ("     <Assign> ::= <Identifier> := <Expression);")
+                outputFile.write("     <Assign> ::= <Identifier> := <Expression);\n")
             
             else:
                 error_string ="[Line Number:" + line_number+"]="+"Syntax Error: Missing ';'.\n" 
@@ -696,7 +656,7 @@ def Assign(lexer_table, i, displayFlag, lexeme, token, outputFile):
 
 #Function for R22. <If> ::=     if  ( <Condition>  ) <Statement>   endif    |   
 #                          if  ( <Condition>  ) <Statement>   else  <Statement>  endif   
-def If(lexer_table, i, displayFlag, lexeme, token, outputFile):
+def If(lexer_table, i, lexeme, token, outputFile):
     syntactic_correct = False
     
     if (lexeme == "if"):
@@ -708,13 +668,13 @@ def If(lexer_table, i, displayFlag, lexeme, token, outputFile):
         if (lexeme == "("):
             print ("Token: " + token + " --- Lexeme: " + lexeme)
             outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-            syntactic_correct, i = Condition(lexer_table, i, displayFlag, lexeme, token, outputFile)
+            syntactic_correct, i = Condition(lexer_table, i, lexeme, token, outputFile)
             line_number, token, lexeme, i = nextLexeme(lexer_table, i + 1)
             if (lexeme == ")"):
                 print ("Token: " + token + " --- Lexeme: " + lexeme)
                 outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-                syntactic_correct, i = Statement(lexer_table, i, displayFlag, lexeme, token, outputFile)
-                syntactic_correct, i = Else(lexer_table, i, displayFlag, lexeme, token, outputFile)
+                syntactic_correct, i = Statement(lexer_table, i, lexeme, token, outputFile)
+                syntactic_correct, i = Else(lexer_table, i, lexeme, token, outputFile)
                 
                 # Generate Assembly
                 back_patch(Instr_address)
@@ -737,22 +697,21 @@ def If(lexer_table, i, displayFlag, lexeme, token, outputFile):
 #End of If()
 
 #Function for Else part of If()
-def Else(lexer_table, i, displayFlag, lexeme, token, outputFile):
+def Else(lexer_table, i, lexeme, token, outputFile):
     syntactic_correct = False
     line_number, token, lexeme, i = nextLexeme(lexer_table, i + 1)
                 
     if (lexeme == "else"):
         print ("Token: " + token + " --- Lexeme: " + lexeme)
         outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-        syntactic_correct, i = Statement(lexer_table, i, displayFlag, lexeme, token, outputFile)
+        syntactic_correct, i = Statement(lexer_table, i, lexeme, token, outputFile)
         line_number, token, lexeme, i = nextLexeme(lexer_table, i + 1)
         
         if (lexeme == "endif"):
             print ("Token: " + token + " --- Lexeme: " + lexeme)
             outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-            if (displayFlag):
-                print ("     <If> ::= (<Condition>) <Statement> else <Statement> endif")
-                outputFile.write("     <If> ::= (<Condition>) <Statement> else <Statement> endif\n")
+            print ("     <If> ::= (<Condition>) <Statement> else <Statement> endif")
+            outputFile.write("     <If> ::= (<Condition>) <Statement> else <Statement> endif\n")
         
         else:
             error_string ="[Line Number:" + line_number+"]="+"Syntax Error: Missing endif.\n" 
@@ -764,9 +723,8 @@ def Else(lexer_table, i, displayFlag, lexeme, token, outputFile):
     elif (lexeme == "endif"):
         print ("Token: " + token + " --- Lexeme: " + lexeme)
         outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-        if (displayFlag):
-            print ("     <If> ::= (<Condition>) <Statement> endif")
-            outputFile.write("     <If> ::= (<Condition>) <Statement> endif\n")
+        print ("     <If> ::= (<Condition>) <Statement> endif")
+        outputFile.write("     <If> ::= (<Condition>) <Statement> endif\n")
     
     else:    
         error_string ="[Line Number:" + line_number+"]="+"Syntax Error: Missing endif or else.\n" 
@@ -779,7 +737,7 @@ def Else(lexer_table, i, displayFlag, lexeme, token, outputFile):
 #End of Else()
 
 #Function for R23. <Return> ::=  return ; |  return <Expression> ;
-def Return(lexer_table, i, displayFlag, lexeme, token, outputFile):
+def Return(lexer_table, i, lexeme, token, outputFile):
     syntactic_correct = False
     
     if (lexeme == "return"):
@@ -788,21 +746,19 @@ def Return(lexer_table, i, displayFlag, lexeme, token, outputFile):
         if (lexeme == ";"):
             print ("Token: " + token + " --- Lexeme: " + lexeme)
             outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-            if (displayFlag):
-                print ("     <Return> ::= return;")
-                outputFile.write("     <Return> ::= return;\n")
+            print ("     <Return> ::= return;")
+            outputFile.write("     <Return> ::= return;\n")
         
         else:
             i -= 1
-            syntactic_correct, i = Expression(lexer_table, i, displayFlag, lexeme, token, outputFile)
+            syntactic_correct, i = Expression(lexer_table, i, lexeme, token, outputFile)
             line_number, token, lexeme, i = nextLexeme(lexer_table, i + 1)
 
             if (lexeme == ";"):
                 print ("Token: " + token + " --- Lexeme: " + lexeme)
                 outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-                if (displayFlag):
-                    print ("     <Return> ::= return <Expression>;")
-                    outputFile.write("     <Return> ::= return <Expression>;\n")
+                print ("     <Return> ::= return <Expression>;")
+                outputFile.write("     <Return> ::= return <Expression>;\n")
             
             else:
                 error_string ="[Line Number:" + line_number+"]="+"Syntax Error: Missing ';'.\n" 
@@ -815,7 +771,7 @@ def Return(lexer_table, i, displayFlag, lexeme, token, outputFile):
 #End of Return()
 
 #Function for R24. <Print> ::=    put ( <Expression>);
-def Print(lexer_table, i, displayFlag, lexeme, token, outputFile):
+def Print(lexer_table, i, lexeme, token, outputFile):
     syntactic_correct = False
     
     if (lexeme == "put"):
@@ -824,7 +780,7 @@ def Print(lexer_table, i, displayFlag, lexeme, token, outputFile):
             print ("Token: " + token + " --- Lexeme: " + lexeme)
             outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
             
-            syntactic_correct, i = Expression(lexer_table, i, displayFlag, lexeme, token, outputFile)
+            syntactic_correct, i = Expression(lexer_table, i, lexeme, token, outputFile)
             
             
             line_number, token, lexeme, i = nextLexeme(lexer_table, i + 1)
@@ -837,9 +793,8 @@ def Print(lexer_table, i, displayFlag, lexeme, token, outputFile):
                 if (lexeme == ";"):
                     print ("Token: " + token + " --- Lexeme: " + lexeme)
                     outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-                    if (displayFlag):
-                        print ("     <Write> ::= put(<Expression>);")
-                        outputFile.write("     <Write> ::= put(<Expression>);\n")
+                    print ("     <Write> ::= put(<Expression>);")
+                    outputFile.write("     <Write> ::= put(<Expression>);\n")
                 
                 else:
                     error_string ="[Line Number:" + line_number+"]="+"Syntax Error: Missing ';'.\n" 
@@ -873,7 +828,7 @@ def Print(lexer_table, i, displayFlag, lexeme, token, outputFile):
 
 
 #Function for R25.<Scan> ::=    get ( <IDs> );
-def Scan(lexer_table, i, displayFlag, lexeme, token, outputFile):
+def Scan(lexer_table, i, lexeme, token, outputFile):
     syntactic_correct = False
     
     if (lexeme == "get"):
@@ -886,7 +841,7 @@ def Scan(lexer_table, i, displayFlag, lexeme, token, outputFile):
             print ("Token: " + token + " --- Lexeme: " + lexeme)
             outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
             
-            syntactic_correct, i = IDs(lexer_table, i, displayFlag, lexeme, token, outputFile)
+            syntactic_correct, i = IDs(lexer_table, i, lexeme, token, outputFile)
             
             
             line_number, token, lexeme, i = nextLexeme(lexer_table, i + 1)
@@ -899,9 +854,8 @@ def Scan(lexer_table, i, displayFlag, lexeme, token, outputFile):
                 if (lexeme == ";"):
                     print ("Token: " + token + " --- Lexeme: " + lexeme)
                     outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-                    if (displayFlag):
-                        print ("     <Read> ::= read(<Statement List>);")
-                        outputFile.write("     <Read> ::= read(<Statement List>);\n")
+                    print ("     <Read> ::= read(<Statement List>);")
+                    outputFile.write("     <Read> ::= read(<Statement List>);\n")
                 
                 else:
                     error_string ="[Line Number:" + line_number+"]="+"Syntax Error: Missing ';'.\n" 
@@ -936,7 +890,7 @@ def Scan(lexer_table, i, displayFlag, lexeme, token, outputFile):
 
 
 #Function for R26.<While> ::=  while ( <Condition>  )  <Statement> 
-def While(lexer_table, i, displayFlag, lexeme, token, outputFile):
+def While(lexer_table, i, lexeme, token, outputFile):
     syntactic_correct = False
     
     if (lexeme == "while"):
@@ -946,15 +900,14 @@ def While(lexer_table, i, displayFlag, lexeme, token, outputFile):
         if (lexeme == "("):
             print ("Token: " + token + " --- Lexeme: " + lexeme)
             outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-            syntactic_correct, i = Condition(lexer_table, i, displayFlag, lexeme, token, outputFile)
+            syntactic_correct, i = Condition(lexer_table, i, lexeme, token, outputFile)
             line_number, token, lexeme, i = nextLexeme(lexer_table, i + 1)
             if (lexeme == ")"):
                 print ("Token: " + token + " --- Lexeme: " + lexeme)
                 outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-                syntactic_correct, i = Statement(lexer_table, i, displayFlag, lexeme, token, outputFile)
-                if (displayFlag):
-                    print ("     <While> ::= while(<Condition>) Statement")
-                    outputFile.write("     <While> ::= while(<Condition>) Statement\n")
+                syntactic_correct, i = Statement(lexer_table, i, lexeme, token, outputFile)
+                print ("     <While> ::= while(<Condition>) Statement")
+                outputFile.write("     <While> ::= while(<Condition>) Statement\n")
                 
             else:
                 error_string ="[Line Number:" + line_number+"]="+"Syntax Error: Missing ')'.\n" 
@@ -974,62 +927,56 @@ def While(lexer_table, i, displayFlag, lexeme, token, outputFile):
 #End of While
 
 #Function for R27.<Condition> ::=     <Expression>  <Relop>   <Expression>
-def Condition(lexer_table, i, displayFlag, lexeme, token, outputFile):
+def Condition(lexer_table, i, lexeme, token, outputFile):
     syntactic_correct = False
     
-    syntactic_correct, i = Expression(lexer_table, i, displayFlag, lexeme, token, outputFile)
-    syntactic_correct, i = Relop(lexer_table, i, displayFlag, lexeme, token, outputFile)
-    syntactic_correct, i = Expression(lexer_table, i, displayFlag, lexeme, token, outputFile)
+    syntactic_correct, i = Expression(lexer_table, i, lexeme, token, outputFile)
+    syntactic_correct, i = Relop(lexer_table, i, lexeme, token, outputFile)
+    syntactic_correct, i = Expression(lexer_table, i, lexeme, token, outputFile)
     
     return syntactic_correct, i
 #End of Condition
 
 #Function for R28.<Relop> ::=        ==   |   ^=    |   >     |   <    |   =>    |   =<          
-def Relop(lexer_table, i, displayFlag, lexeme, token, outputFile):
+def Relop(lexer_table, i, lexeme, token, outputFile):
     syntactic_correct = False
     line_number, token, lexeme, i = nextLexeme(lexer_table, i + 1) 
     
     if (lexeme == "=="):
         print ("Token: " + token + " --- Lexeme: " + lexeme)
         outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-        if (displayFlag):
-            print ("     <Expression> = <Expression>")
-            outputFile.write("     <Expression> = <Expression>\n")
+        print ("     <Expression> = <Expression>")
+        outputFile.write("     <Expression> = <Expression>\n")
             
     elif (lexeme == "^="):
         print ("Token: " + token + " --- Lexeme: " + lexeme)
         outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-        if (displayFlag):
-            print ("     <Expression> ^= <Expression>")
-            outputFile.write("     <Expression> => <Expression>\n")
+        print ("     <Expression> ^= <Expression>")
+        outputFile.write("     <Expression> => <Expression>\n")
             
     elif (lexeme == ">"):
         print ("Token: " + token + " --- Lexeme: " + lexeme)
         outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-        if (displayFlag):
-            print ("     <Expression> > <Expression>")
-            outputFile.write("     <Expression> > <Expression>\n")
+        print ("     <Expression> > <Expression>")
+        outputFile.write("     <Expression> > <Expression>\n")
             
     elif (lexeme == "<"):
         print ("Token: " + token + " --- Lexeme: " + lexeme)
         outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-        if (displayFlag):
-            print ("     <Expression> < <Expression>")
-            outputFile.write("     <Expression> < <Expression>\n")  
+        print ("     <Expression> < <Expression>")
+        outputFile.write("     <Expression> < <Expression>\n")  
     
     elif (lexeme == "<="):
         print ("Token: " + token + " --- Lexeme: " + lexeme)
         outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-        if (displayFlag):
-            print ("     <Expression> <= <Expression>")
-            outputFile.write("     <Expression> <= <Expression>\n")
+        print ("     <Expression> <= <Expression>")
+        outputFile.write("     <Expression> <= <Expression>\n")
             
     elif (lexeme == "=>"):
         print ("Token: " + token + " --- Lexeme: " + lexeme)
         outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-        if (displayFlag):
-            print ("     <Expression> => <Expression>")
-            outputFile.write("     <Expression> <= <Expression>\n")
+        print ("     <Expression> => <Expression>")
+        outputFile.write("     <Expression> <= <Expression>\n")
         
     else:
         error_string ="[Line Number:" + line_number+"]="+"Syntax Error: Invalid Operator" +lexeme+".\n" 
@@ -1042,110 +989,101 @@ def Relop(lexer_table, i, displayFlag, lexeme, token, outputFile):
 #End of Relop
 
 #Function for R29. <Expression> := <Term> <Expression Prime>
-def Expression(lexer_table, i, displayFlag, lexeme, token, outputFile):
+def Expression(lexer_table, i, lexeme, token, outputFile):
     syntactic_correct = False
-    syntactic_correct, i = Term(lexer_table, i, displayFlag, lexeme, token, outputFile)
-    syntactic_correct, i = ExpressionPrime(lexer_table, i, displayFlag, lexeme, token, outputFile)
+    syntactic_correct, i = Term(lexer_table, i, lexeme, token, outputFile)
+    syntactic_correct, i = ExpressionPrime(lexer_table, i, lexeme, token, outputFile)
 
     return syntactic_correct, i
 #End of Expression
 
 #Function for R30. <Expression Prime>:= + <Term> <Expression Prime>| - <Term> <Expression Prime> | <Term> | Epsilon
-def ExpressionPrime(lexer_table, i, displayFlag, lexeme, token, outputFile):
+def ExpressionPrime(lexer_table, i, lexeme, token, outputFile):
     syntactic_correct = False
     line_number, token, lexeme, i = nextLexeme(lexer_table, i + 1)
     if (lexeme == "+"):
         print ("Token: " + token + " --- Lexeme: " + lexeme)
         outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-        if (displayFlag):
-            print ("     <Expression Prime> = + <Expression>")
-            outputFile.write("     <Expression Prime> = + <Expression>\n")
+        print ("     <Expression Prime> = + <Expression>")
+        outputFile.write("     <Expression Prime> = + <Expression>\n")
         
-        syntactic_correct, i = Expression(lexer_table, i, displayFlag, lexeme, token, outputFile)
+        syntactic_correct, i = Expression(lexer_table, i, lexeme, token, outputFile)
         
     elif (lexeme == "-"):
         print ("Token: " + token + " --- Lexeme: " + lexeme)
         outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-        if (displayFlag):
-            print ("     <Expression Prime> = - <Expression>")
-            outputFile.write("     <Expression Prime> = - <Expression>\n")
+        print ("     <Expression Prime> = - <Expression>")
+        outputFile.write("     <Expression Prime> = - <Expression>\n")
         
-        syntactic_correct, i = Expression(lexer_table, i, displayFlag, lexeme, token, outputFile)
+        syntactic_correct, i = Expression(lexer_table, i, lexeme, token, outputFile)
         
     else:
         i -= 1
-        if (displayFlag):
-            print ("     <Expression Prime> = Epsilon")
-            outputFile.write("     <Expression Prime> = Epsilon")
+        print ("     <Expression Prime> = Epsilon")
+        outputFile.write("     <Expression Prime> = Epsilon")
 
     return syntactic_correct, i
 #End of ExpressionPrime()
 
 #Function fir R31. <Term>    ::=  <Factor> <Term Prime>
-def Term(lexer_table, i, displayFlag, lexeme, token, outputFile):
+def Term(lexer_table, i, lexeme, token, outputFile):
     syntactic_correct = False
     
-    if (displayFlag):
-        print ("     <Term> = <Factor><Term Prime>")
-        outputFile.write("    <Term> = <Factor><Term Prime>\n")
-    syntactic_correct, i = Factor(lexer_table, i, displayFlag, lexeme, token, outputFile)
-    syntactic_correct, i = TermPrime(lexer_table, i, displayFlag, lexeme, token, outputFile)
+    print ("     <Term> = <Factor><Term Prime>")
+    outputFile.write("    <Term> = <Factor><Term Prime>\n")
+    syntactic_correct, i = Factor(lexer_table, i, lexeme, token, outputFile)
+    syntactic_correct, i = TermPrime(lexer_table, i, lexeme, token, outputFile)
     
     return syntactic_correct, i
 #End of Term()
 
 #Function for R32. <Term Prime> := *<Factor><Term Prime> |/<Factor> <Term Prime>| <Factor> | Epsilon
-def TermPrime(lexer_table, i, displayFlag, lexeme, token, outputFile):
+def TermPrime(lexer_table, i, lexeme, token, outputFile):
     syntactic_correct = False
     
     line_number, token, lexeme, i = nextLexeme(lexer_table, i + 1)
     if (lexeme == "*"):
         print ("Token: " + token + " --- Lexeme: " + lexeme)
         outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-        if (displayFlag):
-            print ("     <Term Prime> = * <Factor><Term>\n")
-            outputFile.write("     <Term Prime> = * <Factor><Term>\n")
+        print ("     <Term Prime> = * <Factor><Term>\n")
+        outputFile.write("     <Term Prime> = * <Factor><Term>\n")
         
-        syntactic_correct, i = Expression(lexer_table, i, displayFlag, lexeme, token, outputFile)
+        syntactic_correct, i = Expression(lexer_table, i, lexeme, token, outputFile)
         
       
     elif (lexeme == "/"):
         print ("Token: " + token + " --- Lexeme: " + lexeme)
         outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-        if (displayFlag):
-            print ("     <Term Prime> = / <Factor><Term>\n")
-            outputFile.write("     <Term Prime> = / <Factor><Term>\n")
+        print ("     <Term Prime> = / <Factor><Term>\n")
+        outputFile.write("     <Term Prime> = / <Factor><Term>\n")
         
-        syntactic_correct, i = Expression(lexer_table, i, displayFlag, lexeme, token, outputFile)
+        syntactic_correct, i = Expression(lexer_table, i, lexeme, token, outputFile)
         
      
     else:
         i -= 1
-        if (displayFlag):
-            print ("     <Term Prime> = Epsilon")
-            outputFile.write("     <Term Prime> = Epsilon\n")
+        print ("     <Term Prime> = Epsilon")
+        outputFile.write("     <Term Prime> = Epsilon\n")
 
     return syntactic_correct, i
 #End of TermPrime()
 
 #Function for R33. <Factor> ::=      -  <Primary>    |    <Primary>
-def Factor(lexer_table, i, displayFlag, lexeme, token, outputFile):
+def Factor(lexer_table, i, lexeme, token, outputFile):
     syntactic_correct = False
     line_number, token, lexeme, i = nextLexeme(lexer_table, i + 1)
     if (lexeme == "-"):
         print ("Token: " + token + " --- Lexeme: " + lexeme)
         outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-        if (displayFlag):
-            print ("     <Factor> = - <Primary>")
-            outputFile.write("     <Factor> = - <Primary>\n")
+        print ("     <Factor> = - <Primary>")
+        outputFile.write("     <Factor> = - <Primary>\n")
     
     else:
         i -= 1
-        if (displayFlag):
-            print ("     <Factor> = <Primary>")
-            outputFile.write("     <Factor> = <Primary>\n")
+        print ("     <Factor> = <Primary>")
+        outputFile.write("     <Factor> = <Primary>\n")
     
-    syntactic_correct, i = Primary(lexer_table, i, displayFlag, lexeme, token, outputFile)
+    syntactic_correct, i = Primary(lexer_table, i, lexeme, token, outputFile)
     
     return syntactic_correct, i
 #End of Factor()
@@ -1153,60 +1091,54 @@ def Factor(lexer_table, i, displayFlag, lexeme, token, outputFile):
 
 #Function for R34.<Primary> ::=     <Identifier>  |  <Integer>  |   <Identifier>  ( <IDs> )   |   ( <Expression> )   |  
 #                                     <Real>  |   true   |  false
-def Primary(lexer_table, i, displayFlag, lexeme, token, outputFile):
+def Primary(lexer_table, i, lexeme, token, outputFile):
     syntactic_correct = False
     line_number, token, lexeme, i = nextLexeme(lexer_table, i + 1)
     if (token == "Identifier"):
         print ("Token: " + token + " --- Lexeme: " + lexeme)
         outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-        if (displayFlag):
-            print ("     <Primary> = <Identifier>")
-            outputFile.write("     <Primary> = <Identifier>\n")
+        print ("     <Primary> = <Identifier>")
+        outputFile.write("     <Primary> = <Identifier>\n")
       
-        syntactic_correct, i = PrimaryPrime(lexer_table, i, displayFlag, lexeme, token, outputFile)
+        syntactic_correct, i = PrimaryPrime(lexer_table, i, lexeme, token, outputFile)
     
     elif (token == "Integer"):
         print ("Token: " + token + " --- Lexeme: " + lexeme)
         outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-        if (displayFlag):
-            print ("     <Primary> = <Integer>\n")
-            outputFile.write("     <Primary> = <Integer>\n")
+        print ("     <Primary> = <Integer>\n")
+        outputFile.write("     <Primary> = <Integer>\n")
       
     elif (token == "Real"):
         print ("Token: " + token + " --- Lexeme: " + lexeme)
         outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-        if (displayFlag):
-            print ("     <Primary> = <Real>")
-            outputFile.write("     <Primary> = <Real>\n")
+        print ("     <Primary> = <Real>")
+        outputFile.write("     <Primary> = <Real>\n")
     
     elif (lexeme == "true"):
         print ("Token: " + token + " --- Lexeme: " + lexeme)
         outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-        if (displayFlag):
-            print ("     <Primary> = true")
-            outputFile.write("     <Primary> = true\n")
+        print ("     <Primary> = true")
+        outputFile.write("     <Primary> = true\n")
    
     
     elif (lexeme == "false"):
         print ("Token: " + token + " --- Lexeme: " + lexeme)
         outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-        if (displayFlag):
-            print ("     <Primary> = false")
-            outputFile.write("     <Primary> = false\n")
-    
+        print ("     <Primary> = false")
+        outputFile.write("     <Primary> = false\n")
+
     
     elif (lexeme == "("):
         print ("Token: " + token + " --- Lexeme: " + lexeme)
         outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-        syntactic_correct, i = Expression(lexer_table, i, displayFlag, lexeme, token, outputFile)
+        syntactic_correct, i = Expression(lexer_table, i, lexeme, token, outputFile)
         line_number, token, lexeme, i = nextLexeme(lexer_table, i + 1)
         
         if (lexeme == ")"):
             print ("Token: " + token + " --- Lexeme: " + lexeme)
             outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-            if (displayFlag):
-                print ("     <Primary> = (<Expression>)")
-                outputFile.write("     <Primary> = (<Expression>)\n")
+            print ("     <Primary> = (<Expression>)")
+            outputFile.write("     <Primary> = (<Expression>)\n")
         
         else:
             error_string ="[Line Number:" + line_number+"]="+"Syntax Error: Missing ')'.\n" 
@@ -1226,40 +1158,37 @@ def Primary(lexer_table, i, displayFlag, lexeme, token, outputFile):
 #End of Primary()                        
 
 
-def PrimaryPrime(lexer_table, i, displayFlag, lexeme, token, outputFile):
+def PrimaryPrime(lexer_table, i, lexeme, token, outputFile):
     syntactic_correct = False
     line_number, token, lexeme, i = nextLexeme(lexer_table, i + 1)
     print ("Token: " + token + " --- Lexeme: " + lexeme)
     outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
     if (lexeme == "["):
-        syntactic_correct, i = IDs(lexer_table, i, displayFlag, lexeme, token, outputFile)
+        syntactic_correct, i = IDs(lexer_table, i, lexeme, token, outputFile)
         line_number, token, lexeme, i = nextLexeme(lexer_table, i + 1)
         
         if (lexeme == "]"):
             print ("Token: " + token + " --- Lexeme: " + lexeme)
             outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-            if (displayFlag):
-                print ("     <Primary Prime> = [<IDs>]")
-                outputFile.write("     <Primary Prime> = [<IDs>])\n")
+            print ("     <Primary Prime> = [<IDs>]")
+            outputFile.write("     <Primary Prime> = [<IDs>])\n")
             
     else:
         i -= 1
-        if (displayFlag):
-            print ("     <Primary Prime> = Epsilon")
-            outputFile.write("     <Primary Prime> = Epsilon\n")
+        print ("     <Primary Prime> = Epsilon")
+        outputFile.write("     <Primary Prime> = Epsilon\n")
                 
     return syntactic_correct, i    
 #End of PrimaryPrime
 
 #Function for R35.<Empty>   ::= Epsilon
-def Empty(lexer_table, i, displayFlag, lexeme, token, outputFile):
+def Empty(lexer_table, i, lexeme, token, outputFile):
     syntactic_correct = False
 #     line_number, token, lexeme, i = nextLexeme(lexer_table, i + 1)
     print ("Token: " + token + " --- Lexeme: " + lexeme)
     outputFile.write("Token: " + token + " --- Lexeme: " + lexeme + '\n')
-    if (displayFlag):
-        print ("     <Empty> ::= Epsilon")
-        outputFile.write("     <Empty> ::= Epsilon\n")
+    print ("     <Empty> ::= Epsilon")
+    outputFile.write("     <Empty> ::= Epsilon\n")
     syntactic_correct = True
             
     return syntactic_correct, i

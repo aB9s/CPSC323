@@ -1,0 +1,167 @@
+Token: Keyword --- Lexeme: function
+Token: Keyword --- Lexeme: function
+     <Opt Function Definitions> ::= <FunctionDefinitions>
+     <Function Definitions> ::= <Function><Function Definitions Prime>
+Token: Identifier --- Lexeme: convert$
+Token: Separator --- Lexeme: [
+     <Opt Parameter List> ::= <Parameter List>
+     <Parameter List> ::= <Parameter> , <Parameter List Prime>
+     <Parameter> ::= <IDS> := <Qualifier>
+Token: Identifier --- Lexeme: fahr
+     <IDs> ::= <Identifier>
+     <IDsPrime> ::= Epsilon
+Token: Separator --- Lexeme: :
+Token: Keyword --- Lexeme: int
+     <Qualifier> ::= int
+     <Parameter List Prime> ::= Epsilon
+Token: Separator --- Lexeme: ]
+Token: Separator --- Lexeme: {
+     <OptDeclarationList> ::= <Empty>
+Token: Separator --- Lexeme: {
+     <Empty> ::= Epsilon
+Token: Separator --- Lexeme: {
+     <Statement List> ::= <Statement> <Statement List Prime>
+Token: Keyword --- Lexeme: return
+     <Statement> ::= <Return>
+    <Term> = <Factor><Term Prime>
+     <Factor> = <Primary>
+Token: Integer --- Lexeme: 5
+     <Primary> = <Integer>
+Token: Operator --- Lexeme: *
+     <Term Prime> = * <Factor><Term>
+    <Term> = <Factor><Term Prime>
+     <Factor> = <Primary>
+Token: Separator --- Lexeme: (
+    <Term> = <Factor><Term Prime>
+     <Factor> = <Primary>
+Token: Identifier --- Lexeme: fahr
+     <Primary> = <Identifier>
+Token: Operator --- Lexeme: -
+     <Primary Prime> = Epsilon
+     <Term Prime> = Epsilon
+Token: Operator --- Lexeme: -
+     <Expression Prime> = - <Expression>
+    <Term> = <Factor><Term Prime>
+     <Factor> = <Primary>
+Token: Integer --- Lexeme: 32
+     <Primary> = <Integer>
+     <Term Prime> = Epsilon
+     <Expression Prime> = EpsilonToken: Separator --- Lexeme: )
+     <Primary> = (<Expression>)
+Token: Operator --- Lexeme: /
+     <Term Prime> = / <Factor><Term>
+    <Term> = <Factor><Term Prime>
+     <Factor> = <Primary>
+Token: Integer --- Lexeme: 9
+     <Primary> = <Integer>
+     <Term Prime> = Epsilon
+     <Expression Prime> = Epsilon     <Expression Prime> = Epsilon     <Expression Prime> = EpsilonToken: Separator --- Lexeme: ;
+     <Return> ::= return <Expression>;
+     <Statement List Prime> ::= Epsilon
+Token: Separator --- Lexeme: }
+     <Body> ::= {<Statement List>}
+Token: Unknown --- Lexeme: %%
+     <Function Definitions Prime> ::= Epsilon
+     <Function Definitions> ::= <Function>
+Token: Unknown --- Lexeme: %%
+     <OptDeclarationList> ::= <DeclarationList>
+     <DeclarationList> ::= <Declaration>;<DeclarationList>
+     <Declaration> ::= <Qualifier> <IDs>
+Token: Keyword --- Lexeme: int
+     <Qualifier> ::= int
+Token: Identifier --- Lexeme: low
+     <IDs> ::= <Identifier>
+Token: Separator --- Lexeme: ,
+Token: Identifier --- Lexeme: high
+     <IDs> ::= <Identifier>
+Token: Separator --- Lexeme: ,
+Token: Identifier --- Lexeme: step$
+     <IDs> ::= <Identifier>
+     <IDsPrime> ::= Epsilon
+Token: Separator --- Lexeme: ;
+     <Declaration List Prime> ::= Epsilon
+     <Statement List> ::= <Statement> <Statement List Prime>
+Token: Keyword --- Lexeme: get
+     <Statement> ::= <Scan>
+Token: Keyword --- Lexeme: get
+Token: Separator --- Lexeme: (
+Token: Identifier --- Lexeme: low
+     <IDs> ::= <Identifier>
+Token: Separator --- Lexeme: ,
+Token: Identifier --- Lexeme: high
+     <IDs> ::= <Identifier>
+Token: Separator --- Lexeme: ,
+Token: Identifier --- Lexeme: step$
+     <IDs> ::= <Identifier>
+     <IDsPrime> ::= Epsilon
+Token: Separator --- Lexeme: )
+Token: Separator --- Lexeme: ;
+     <Read> ::= read(<Statement List>);
+Token: Keyword --- Lexeme: while
+     <Statement List Prime> ::= <Statement List>
+     <Statement List> ::= <Statement> <Statement List Prime>
+Token: Keyword --- Lexeme: while
+     <Statement> ::= <While>
+Token: Separator --- Lexeme: (
+    <Term> = <Factor><Term Prime>
+     <Factor> = <Primary>
+Token: Identifier --- Lexeme: low
+     <Primary> = <Identifier>
+Token: Operator --- Lexeme: <
+     <Primary Prime> = Epsilon
+     <Term Prime> = Epsilon
+     <Expression Prime> = EpsilonToken: Operator --- Lexeme: <
+     <Expression> < <Expression>
+    <Term> = <Factor><Term Prime>
+     <Factor> = <Primary>
+Token: Identifier --- Lexeme: high
+     <Primary> = <Identifier>
+Token: Separator --- Lexeme: )
+     <Primary Prime> = Epsilon
+     <Term Prime> = Epsilon
+     <Expression Prime> = EpsilonToken: Separator --- Lexeme: )
+Token: Separator --- Lexeme: {
+     <Statement> ::= <Compound>
+Token: Separator --- Lexeme: {
+     <Statement List> ::= <Statement> <Statement List Prime>
+Token: Keyword --- Lexeme: put
+     <Statement> ::= <Print>
+Token: Separator --- Lexeme: (
+    <Term> = <Factor><Term Prime>
+     <Factor> = <Primary>
+Token: Identifier --- Lexeme: low
+     <Primary> = <Identifier>
+Token: Separator --- Lexeme: )
+     <Primary Prime> = Epsilon
+     <Term Prime> = Epsilon
+     <Expression Prime> = EpsilonToken: Separator --- Lexeme: )
+Token: Separator --- Lexeme: ;
+     <Write> ::= put(<Expression>);
+Token: Identifier --- Lexeme: low
+     <Statement List Prime> ::= <Statement List>
+     <Statement List> ::= <Statement> <Statement List Prime>
+Token: Identifier --- Lexeme: low
+     <Statement> ::= <Assign>
+Token: Operator --- Lexeme: =
+    <Term> = <Factor><Term Prime>
+     <Factor> = <Primary>
+Token: Identifier --- Lexeme: low
+     <Primary> = <Identifier>
+Token: Operator --- Lexeme: +
+     <Primary Prime> = Epsilon
+     <Term Prime> = Epsilon
+Token: Operator --- Lexeme: +
+     <Expression Prime> = + <Expression>
+    <Term> = <Factor><Term Prime>
+     <Factor> = <Primary>
+Token: Identifier --- Lexeme: step$
+     <Primary> = <Identifier>
+Token: Separator --- Lexeme: ;
+     <Primary Prime> = Epsilon
+     <Term Prime> = Epsilon
+     <Expression Prime> = EpsilonToken: Separator --- Lexeme: ;
+     <Assign> ::= <Identifier> := <Expression);
+     <Statement List Prime> ::= Epsilon
+Token: Separator --- Lexeme: }
+     <Compound> ::= {<Statement List>}
+     <While> ::= while(<Condition>) Statement
