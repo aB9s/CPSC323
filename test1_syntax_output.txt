@@ -1,7 +1,0 @@
-Token: Keyword --- Lexeme: int
-Token: Keyword --- Lexeme: int
-     <Opt Function Definitions> ::= <Empty>
-Token: Keyword --- Lexeme: int
-     <Empty> ::= Epsilon
-Syntax Error: Missing %% at the end of <Opt Funtion Definitions>]
-Line Number: 2
