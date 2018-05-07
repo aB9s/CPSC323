@@ -1,0 +1,4 @@
+IDENTIFIER				MEMORY LOCATION				TYPE
+i							2000					int
+max							2001					int
+sum							2002					int
