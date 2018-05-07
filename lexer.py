@@ -8,7 +8,7 @@
 
 
 # Keywords
-Keywords = ["int", "float", "real", "boolean", "if", "else", "endif", "while", "return", "get", "put", "function",
+Keywords = ["int", "float","real", "boolean", "if", "else", "endif", "while", "return", "get", "put", "function",
             "for"]
 # Separators
 Separators = ["{", "}", "[", "]", "(", ")", ";", ",", ":"]
