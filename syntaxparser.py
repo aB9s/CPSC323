@@ -1,5 +1,5 @@
 #####################################################################
-##            CPSC323 Assignment 2 (Syntax Parser)                 ##
+##            CPSC323 Assignment 3                                 ##
 ##            Team Members:                                        ##
 ##                          1. Aishwarya Iyer                      ##
 ##                          2. Abhishek Mhatre                     ##
@@ -68,9 +68,6 @@ def create_symbol_table(input_filename):
 
     i = 2
     while i < len(lexer_table) - 1:
-        token = ""
-        lexeme = ""
-        line_number = ""
 
         line_number, token, lexeme, i = next_lexeme(lexer_table, i)
         if (lexeme == "int") or (lexeme == "boolean"):
@@ -140,18 +137,18 @@ def print_assembly_code():
 
 
 # Function to generate assembly code instruction
-def generate_assembly_instruction(op, operand):
+def generate_assembly_instruction(operation_instr, operation):
     global Instruction_Table_Address_Array, Instruction_Table_Operation_Array, Instruction_Table_Operand_Array, instruction_table_address
 
     Instruction_Table_Address_Array.append(instruction_table_address)
-    Instruction_Table_Operation_Array.append(op)
-    Instruction_Table_Operand_Array.append(operand)
+    Instruction_Table_Operation_Array.append(operation_instr)
+    Instruction_Table_Operand_Array.append(operation)
 
     instruction_table_address += 1
 
 
 # Function to get the memory address of the variable if it is already present in the Symbol table
-def get_address(save):
+def get_memory_address(save):
     identifierPosition = 0
     if save in Identifier_Array:
         identifierPosition = Identifier_Array.index(save)
@@ -207,6 +204,8 @@ def next_lexeme(lexer_table, i):
         return line_number, token, lexeme, i
     else:
         print('\n\n*****    Parsing finished    *****')
+        # Print Assembly Code
+        print_assembly_code()
         terminate()
 # End of next_lexeme() function
 
@@ -780,7 +779,7 @@ def Assign(lexer_table, i, lexeme, token, outputFile):
             syntactic_correct, i = Expression(lexer_table, i, lexeme, token, outputFile)
 
             # Generate Assembly
-            generate_assembly_instruction("POPM", get_address(save))
+            generate_assembly_instruction("POPM", get_memory_address(save))
 
             line_number, token, lexeme, i = next_lexeme(lexer_table, i + 1)
 
@@ -1004,7 +1003,7 @@ def Scan(lexer_table, i, lexeme, token, outputFile):
             syntactic_correct, i = IDs(lexer_table, i, lexeme, token, outputFile)
 
             # Generate Assembly
-            generate_assembly_instruction("POPM", get_address(lexeme))
+            generate_assembly_instruction("POPM", get_memory_address(lexeme))
 
             line_number, token, lexeme, i = next_lexeme(lexer_table, i + 1)
 
@@ -1307,7 +1306,7 @@ def Primary(lexer_table, i, lexeme, token, outputFile):
         outputFile.write("     <Primary> = <Identifier>\n")
 
         # Generate Assembly
-        generate_assembly_instruction("PUSHM", get_address(lexeme))
+        generate_assembly_instruction("PUSHM", get_memory_address(lexeme))
 
         syntactic_correct, i = PrimaryPrime(lexer_table, i, lexeme, token, outputFile)
 
@@ -1428,9 +1427,6 @@ def main():
     lexer_table_content = get_lexer_table()
     # Generate Syntax
     simplified_RAT18S(lexer_table_content)
-
-    # Print Assembly Code
-    print_assembly_code()
 
 
 if __name__ == "__main__":
