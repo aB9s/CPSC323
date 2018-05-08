@@ -1,0 +1,1 @@
+! Assignment 3 !! Sample Test 2 !! Does not allow real !%%   int x,y,i,max;   x=32;   y=2;   i=0;   max=2;    real x;    x = 34.2;   while (i<max) {	         x= x/y;         i=i+1;   }    put(x);

@@ -1,0 +1,1 @@
+! Assignment 3 !! Sample Test 3 !! Does not allow multiple declarations !%%int low, high, step;low = 2;high = 12;step =0;int high;sget(low);while(low=<high){	put(low);	low=low+step;}
